@@ -292,6 +292,164 @@
             margin-bottom: 1rem;
         }
 
+        /* Resume Checker */
+        .resume-checker {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-area.dragover {
+            background: #e8ebff;
+            border-color: #764ba2;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .upload-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .feedback-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .feedback-container h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .feedback-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .feedback-section h4 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feedback-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feedback-section li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feedback-section li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .score-card {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .score-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .reset-button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        }
+
         /* Newsletter */
         .newsletter {
             background: #f8f9fa;
@@ -378,6 +536,7 @@
                 <li><a href="#problem">The Issue</a></li>
                 <li><a href="#solutions">Solutions</a></li>
                 <li><a href="#stories">Stories</a></li>
+                <li><a href="#resume-checker">Resume Tool</a></li>
                 <li><a href="#involved">Get Involved</a></li>
             </ul>
         </nav>
@@ -502,6 +661,31 @@
         </div>
     </section>
 
+    <section id="resume-checker" class="resume-checker">
+        <div class="resume-container">
+            <h2 class="section-title">Free Resume Feedback Tool</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem; color: #666;">
+                Upload your resume and get instant feedback on how to improve it for better job opportunities
+            </p>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <h3>Drop your resume here or click to upload</h3>
+                <p>Supports PDF, DOC, DOCX, TXT files (Max 5MB)</p>
+                <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                <button class="upload-button" onclick="document.getElementById('resumeFile').click()">
+                    Choose File
+                </button>
+            </div>
+
+            <div id="resumeFeedback" class="feedback-container" style="display: none;">
+                <h3>Resume Analysis Results</h3>
+                <div id="feedbackContent"></div>
+                <button class="reset-button" onclick="resetResumeChecker()">Upload Another Resume</button>
+            </div>
+        </div>
+    </section>
+
     <section class="newsletter">
         <h2 class="section-title">Stay Updated</h2>
         <p>Join our community and receive updates about programs, success stories, and ways to make a difference.</p>
@@ -516,6 +700,176 @@
     </footer>
 
     <script>
+        // Resume Upload Handler
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('resumeFile');
+        const feedbackDiv = document.getElementById('resumeFeedback');
+        const feedbackContent = document.getElementById('feedbackContent');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File is too large. Please upload a file smaller than 5MB.');
+                return;
+            }
+
+            // Validate file type
+            const validTypes = ['.pdf', '.doc', '.docx', '.txt'];
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+            if (!validTypes.includes(fileExt)) {
+                alert('Please upload a PDF, DOC, DOCX, or TXT file.');
+                return;
+            }
+
+            // Read file
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                analyzeResume(e.target.result, file.name);
+            };
+            reader.readAsText(file);
+        }
+
+        function analyzeResume(content, filename) {
+            uploadArea.style.display = 'none';
+            feedbackDiv.style.display = 'block';
+
+            // Analyze resume content
+            const text = content.toLowerCase();
+            const wordCount = content.split(/\s+/).length;
+            
+            // Check for key sections
+            const hasContact = /email|phone|mobile|contact/.test(text);
+            const hasExperience = /experience|worked|employed|position/.test(text);
+            const hasEducation = /education|degree|university|college|school/.test(text);
+            const hasSkills = /skills|proficient|knowledge|expertise/.test(text);
+            
+            // Check for action verbs
+            const actionVerbs = ['achieved', 'improved', 'managed', 'led', 'created', 'developed', 'implemented', 'increased'];
+            const hasActionVerbs = actionVerbs.some(verb => text.includes(verb));
+            
+            // Calculate score
+            let score = 0;
+            if (hasContact) score += 20;
+            if (hasExperience) score += 20;
+            if (hasEducation) score += 20;
+            if (hasSkills) score += 20;
+            if (hasActionVerbs) score += 10;
+            if (wordCount >= 200 && wordCount <= 600) score += 10;
+
+            // Generate feedback
+            generateFeedback(score, {
+                hasContact,
+                hasExperience,
+                hasEducation,
+                hasSkills,
+                hasActionVerbs,
+                wordCount
+            });
+        }
+
+        function generateFeedback(score, checks) {
+            let html = `
+                <div class="score-card">
+                    <div class="score-item">
+                        <div class="score-number">${score}/100</div>
+                        <div class="score-label">Overall Score</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-number">${checks.wordCount}</div>
+                        <div class="score-label">Word Count</div>
+                    </div>
+                </div>
+            `;
+
+            // Strengths
+            const strengths = [];
+            if (checks.hasContact) strengths.push('Contact information is present');
+            if (checks.hasExperience) strengths.push('Work experience section included');
+            if (checks.hasEducation) strengths.push('Education details provided');
+            if (checks.hasSkills) strengths.push('Skills section found');
+            if (checks.hasActionVerbs) strengths.push('Uses strong action verbs');
+
+            if (strengths.length > 0) {
+                html += `
+                    <div class="feedback-section">
+                        <h4>✅ Strengths</h4>
+                        <ul>
+                            ${strengths.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Improvements
+            const improvements = [];
+            if (!checks.hasContact) improvements.push('Add clear contact information (email, phone number)');
+            if (!checks.hasExperience) improvements.push('Include work experience with specific achievements');
+            if (!checks.hasEducation) improvements.push('Add education background and qualifications');
+            if (!checks.hasSkills) improvements.push('List relevant skills and competencies');
+            if (!checks.hasActionVerbs) improvements.push('Use action verbs like "achieved," "managed," "created," "improved"');
+            if (checks.wordCount < 200) improvements.push('Resume is too short. Aim for 200-600 words with more detail');
+            if (checks.wordCount > 600) improvements.push('Resume is too long. Keep it concise (200-600 words)');
+
+            if (improvements.length > 0) {
+                html += `
+                    <div class="feedback-section">
+                        <h4>💡 Areas for Improvement</h4>
+                        <ul>
+                            ${improvements.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Recommendations
+            html += `
+                <div class="feedback-section">
+                    <h4>🎯 Key Recommendations</h4>
+                    <ul>
+                        <li>Tailor your resume for each job application</li>
+                        <li>Quantify achievements with numbers and percentages</li>
+                        <li>Keep formatting clean and professional</li>
+                        <li>Proofread carefully for spelling and grammar</li>
+                        <li>Include relevant keywords from the job description</li>
+                        <li>Focus on results and impact, not just duties</li>
+                    </ul>
+                </div>
+            `;
+
+            feedbackContent.innerHTML = html;
+        }
+
+        function resetResumeChecker() {
+            uploadArea.style.display = 'block';
+            feedbackDiv.style.display = 'none';
+            fileInput.value = '';
+        }
+
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
